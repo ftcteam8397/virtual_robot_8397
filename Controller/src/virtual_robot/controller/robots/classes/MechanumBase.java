@@ -16,7 +16,7 @@ import virtual_robot.util.AngleUtils;
  */
 public class MechanumBase extends VirtualBot {
 
-    public static final MotorType MOTOR_TYPE = MotorType.Neverest40;
+    public static final MotorType MOTOR_TYPE = MotorType.NeverestOrbital20;
     private DcMotorExImpl[] motors = null;
     //private VirtualRobotController.GyroSensorImpl gyro = null;
     private BNO055IMUImpl imu = null;

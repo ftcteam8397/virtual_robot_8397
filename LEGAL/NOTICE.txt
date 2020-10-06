@@ -22,5 +22,7 @@ Virtual Robot, Copyright 2019 Team Beta
 
    Javassist software (Copyright 1999-2019, Shigeru Chiba), Licensed under Apache License, Version 2.0
 
+   Apache Commons Math (Copyright 2001-2016, The Apache Software Founcation), Licensed under Apache License, Version 2.0
+
 
 
