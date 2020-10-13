@@ -19,16 +19,6 @@ public abstract class MecBotAutonomous extends LinearOpMode {
         boolean isTrue();
     }
 
-
-
-    /**
-     * runOpMode is declared "abstract", so we won't actually provide code for it. The code must be provided
-     * by classes that extend MechBotAutonomous.
-     *
-     * TODO: We can delete this. runOpMode is already declared as an abstract method in LinearOpMode; that doesn't need to be repeated here.
-     */
-    public abstract void runOpMode();
-
     /**
      * Assign a MechBot object to bot. This object should already be initialized before being provided.
      * @param b
@@ -66,8 +56,6 @@ public abstract class MecBotAutonomous extends LinearOpMode {
             if (finished.isTrue()) {
                 break;                                                //Break from loop if we've travelled far enouch
             }
-
-            //TODO: Update robot drive speed based on current position and orientation.
 
             float vx = -speed * (float)Math.sin(directionRadians - bot.pose.theta);
             float vy = speed * (float)Math.cos(directionRadians - bot.pose.theta);
