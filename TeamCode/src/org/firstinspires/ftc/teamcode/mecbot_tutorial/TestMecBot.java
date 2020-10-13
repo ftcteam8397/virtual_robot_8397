@@ -21,9 +21,9 @@ public class TestMecBot extends LinearOpMode {
              * Update our estimate of the robot's position on the field, then display it with telemetry.
              */
             bot.updateOdometry();
-            telemetry.addData("X = ", bot.pose.x);
-            telemetry.addData("Y = ", bot.pose.y);
-            telemetry.addData("Theta = ", Math.toDegrees(bot.pose.theta));
+            telemetry.addData("X = ", bot.getPose().x);
+            telemetry.addData("Y = ", bot.getPose().y);
+            telemetry.addData("Theta = ", Math.toDegrees(bot.getPose().theta));
             telemetry.update();
 
             /*
