@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.mecbot_tutorial;
+package org.firstinspires.ftc.teamcode.mecbot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.mecbot_tutorial.MecBotAutonomous;
 
 @Autonomous(name = "Test MB Auto", group = "tutorial")
 public class TestMBAuto extends MecBotAutonomous{

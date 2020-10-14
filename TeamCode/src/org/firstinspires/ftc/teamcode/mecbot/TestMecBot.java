@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.mecbot_tutorial;
+package org.firstinspires.ftc.teamcode.mecbot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.mecbot_tutorial.MecBot;
 
 @TeleOp(name="Test Mech Bot", group="tutorial")
 public class TestMecBot extends LinearOpMode {

@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.mecbot_tutorial;
+package org.firstinspires.ftc.teamcode.mecbot;
 
-import android.graphics.Color;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -107,19 +105,17 @@ public class MecBot {
     public void setHeadingDegrees(float headingDegrees){
         Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         headingOffsetRadians = (float)Math.toRadians(headingDegrees) - orientation.firstAngle;
-        pose.theta = (float)Math.toRadians(headingDegrees);
+        pose = new Pose(pose.x, pose.y, (float)Math.toRadians(headingDegrees));
         updateTicks();
     }
 
     public void setPose(float x, float y, float headingDegrees){
-        pose.x = x;
-        pose.y = y;
+        pose = new Pose(x, y, pose.theta);
         setHeadingDegrees(headingDegrees);
     }
 
     public void setPose(float x, float y){
-        pose.x = x;
-        pose.y = y;
+        pose = new Pose(x, y, pose.theta);
         updateTicks();
     }
 
@@ -141,15 +137,15 @@ public class MecBot {
     /**
      * Set the drive powers for the forward, rotation, and strafe directions. Note that these powers are in
      * the range of -1 to +1, and represent the FRACTION of maximal possible drive speed in each direction.
-     * @param forward   forward (robot-Y-axis) power
-     * @param rotate    rotation power (counter-clockwise if positive)
-     * @param strafe    strafe power (robot-X-axis)
+     * @param px    rightward strafe (robot-X-axis) power
+     * @param py    forward power (Y-direction)
+     * @param pa    rotation power (counter-clockwise if positive)
      */
-    public void setDrivePower(float forward, float rotate, float strafe) {
-        float frontLeftPower = forward - rotate + strafe;
-        float frontRightPower = forward + rotate - strafe;
-        float backLeftPower = forward - rotate - strafe;
-        float backRightPower = forward + rotate + strafe;
+    public void setDrivePower(float px, float py, float pa) {
+        float frontLeftPower = py - pa + px;
+        float frontRightPower = py + pa - px;
+        float backLeftPower = py - pa - px;
+        float backRightPower = py + pa + px;
 
         float largest = 1;
         largest = Math.max(largest, Math.abs(frontLeftPower));
@@ -173,7 +169,7 @@ public class MecBot {
         float px = (vx / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
         float py = (vy / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
         float pa = (WL_AVG * va / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
-        setDrivePower(py, pa, px);
+        setDrivePower(px, py, pa);
     }
 
     /**
@@ -247,9 +243,7 @@ public class MecBot {
         /*
          * Update the Pose object with the new values for X, Y, and Heading
          */
-        pose.x = pose.x + dX;
-        pose.y = pose.y + dY;
-        pose.theta = heading;
+        pose = new Pose(pose.x + dX, pose.y + dY, heading);
 
         /*
          * Return the updated Pose object
