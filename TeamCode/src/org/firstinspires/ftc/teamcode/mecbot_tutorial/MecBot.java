@@ -30,10 +30,10 @@ public class MecBot {
     /*
      * Drive Motors
      */
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
 
     /*
      * The color sensor
@@ -52,7 +52,7 @@ public class MecBot {
     /*
      * The current pose of the robot
      */
-    public Pose pose = new Pose(0, 0, 0);
+    private Pose pose = new Pose(0, 0, 0);
 
     /*
      * The most recent previous readings of the drive motor ticks
@@ -84,6 +84,10 @@ public class MecBot {
         parameters.loggingTag = "Who cares.";
 
         imu.initialize(parameters);
+    }
+
+    public Pose getPose() {
+        return pose;
     }
 
     /**

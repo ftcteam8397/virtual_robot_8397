@@ -18,7 +18,7 @@ public class TestMBAuto extends MecBotAutonomous{
                 new Predicate() {
                     @Override
                     public boolean isTrue() {
-                        return bot.pose.x > 48;
+                        return bot.getPose().x > 48;
                     }
                 });
         turnToHeading(90, 0.1f, 1);

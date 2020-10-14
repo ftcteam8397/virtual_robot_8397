@@ -42,8 +42,8 @@ public abstract class MecBotAutonomous extends LinearOpMode {
         /*
          * Get the robot's starting coordinates, so we can keep track of how far we have travelled.
          */
-        float xStart = bot.pose.x;
-        float yStart = bot.pose.y;
+        float xStart = bot.getPose().x;
+        float yStart = bot.getPose().y;
 
         float directionRadians = (float)Math.toRadians(directionDegrees);
         float targetHeadingRadians = (float)Math.toRadians(targetHeadingDegrees);
@@ -57,10 +57,10 @@ public abstract class MecBotAutonomous extends LinearOpMode {
                 break;                                                //Break from loop if we've travelled far enouch
             }
 
-            float vx = -speed * (float)Math.sin(directionRadians - bot.pose.theta);
-            float vy = speed * (float)Math.cos(directionRadians - bot.pose.theta);
+            float vx = -speed * (float)Math.sin(directionRadians - bot.getPose().theta);
+            float vy = speed * (float)Math.cos(directionRadians - bot.getPose().theta);
 
-            float angleOffset = (float)AngleUtils.normalizeRadians(targetHeadingRadians - bot.pose.theta);
+            float angleOffset = (float)AngleUtils.normalizeRadians(targetHeadingRadians - bot.getPose().theta);
             float va = 0.2f * angleOffset;
 
             bot.setDriveSpeed(vx, vy, va);
@@ -75,7 +75,7 @@ public abstract class MecBotAutonomous extends LinearOpMode {
         float toleranceRadians = toleranceDegrees * (float)Math.PI / 180;
         while(opModeIsActive()) {
             bot.updateOdometry();
-            float currentHeading = bot.pose.theta;
+            float currentHeading = bot.getPose().theta;
             float angleDiff = (float)AngleUtils.normalizeRadians(targetHeadingRadians - currentHeading);
             if(Math.abs(angleDiff) < toleranceRadians) {
                 break;
