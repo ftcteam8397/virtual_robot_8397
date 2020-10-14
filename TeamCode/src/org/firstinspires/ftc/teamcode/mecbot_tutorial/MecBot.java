@@ -38,7 +38,6 @@ public class MecBot {
     /*
      * The color sensor
      */
-    ColorSensor colorSensor;
 
     /*
      * The BNO055IMU (gyro)
@@ -47,14 +46,11 @@ public class MecBot {
 
     /*
      * The heading offset (this gives us flexibility in specifying the world coordinate system).
-     *
-     *
      */
     private float headingOffsetRadians = 0;
 
     /*
-     * The current pose of the robot.
-     *
+     * The current pose of the robot
      */
     private Pose pose = new Pose(0, 0, 0);
 
@@ -75,7 +71,6 @@ public class MecBot {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        colorSensor = hwMap.get(ColorSensor.class, "color_sensor");
 
         imu = hwMap.get(BNO055IMU.class, "imu");
 
@@ -142,12 +137,6 @@ public class MecBot {
      * Get the current Hue, Saturation, and Value from the Color Sensor
      * @return
      */
-    public float[] getHSV() {
-        float[] hsv = new float[3];
-        Color.RGBToHSV(colorSensor.red(), colorSensor.green(),
-                colorSensor.blue(), hsv);
-        return hsv;
-    }
 
     /**
      * Set the drive powers for the forward, rotation, and strafe directions. Note that these powers are in
