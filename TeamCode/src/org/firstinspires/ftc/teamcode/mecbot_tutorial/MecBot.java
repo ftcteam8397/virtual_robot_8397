@@ -30,10 +30,10 @@ public class MecBot {
     /*
      * Drive Motors
      */
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
 
     /*
      * The color sensor
@@ -48,15 +48,15 @@ public class MecBot {
     /*
      * The heading offset (this gives us flexibility in specifying the world coordinate system).
      *
-     * TODO: Make this private; it should only be accessed by methods of MechBot
+     *
      */
     private float headingOffsetRadians = 0;
 
     /*
      * The current pose of the robot.
-     * TODO: Consider making this private, and providing a getPose() method to access it.
+     *
      */
-    public Pose pose = new Pose(0, 0, 0);
+    private Pose pose = new Pose(0, 0, 0);
 
     /*
      * The most recent previous readings of the drive motor ticks
@@ -89,6 +89,10 @@ public class MecBot {
         parameters.loggingTag = "Who cares.";
 
         imu.initialize(parameters);
+    }
+
+    public Pose getPose() {
+        return pose;
     }
 
     /**
