@@ -34,10 +34,6 @@ public class MecBot {
     private DcMotor backRight;
 
     /*
-     * The color sensor
-     */
-
-    /*
      * The BNO055IMU (gyro)
      */
     BNO055IMU imu;
@@ -56,6 +52,24 @@ public class MecBot {
      * The most recent previous readings of the drive motor ticks
      */
     int ticksBL, ticksFL, ticksFR, ticksBR;
+
+    /**
+     * Enum MotorType represents types of motors that can be used to power the drive.
+     */
+    public enum MotorType {
+        Neverest40(1120, false),
+        Neverest20(560, false),
+        NeverestOrbital20(560, true),
+        Neverest60(1680, false);
+
+        MotorType(double ticksPerRotation, boolean reversed){
+            this.ticksPerRotation = ticksPerRotation;
+            this.reversed = reversed;
+        }
+
+        private double ticksPerRotation;
+        private boolean reversed;
+    }
 
     /**
      * Obtain instances of the robot hardware using the hardware map, and initialize the BNO055IMU
