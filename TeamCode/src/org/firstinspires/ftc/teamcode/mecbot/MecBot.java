@@ -18,8 +18,16 @@ import org.firstinspires.ftc.teamcode.util.AngleUtils;
 public class MecBot {
 
     /*
-     * Constants
+     * TODO: Modify MecBot so that it can be used with robots that have different motor types, width, length, wheel
+     * diameter, roller angle, gear ratio, and orientation of Rev Expansion Hub on the robot.
      */
+
+    /*
+     * Constants
+     *
+     * TODO: Add some constants for motor type, gear ratio, AxesMap, AxesSign, tangent of roller angle.
+     */
+
     public static final float WHEEL_CIRCUMFERENCE = 4 * (float)Math.PI;
     public static final float TICKS_PER_ROTATION = 560;
     public static final float MAX_TICKS_PER_SECOND = 2500;
@@ -35,6 +43,8 @@ public class MecBot {
 
     /*
      * The BNO055IMU (gyro)
+     *
+     * TODO: Make this a BNO055Enhanced
      */
     BNO055IMU imu;
 
@@ -71,6 +81,11 @@ public class MecBot {
         private boolean reversed;
     }
 
+    /*
+     * TODO: Add a constructor which takes parameters for motor type, width, length, wheel diameter, roller angle,
+     * gear ratio, axes map, and axes sign
+     */
+
     /**
      * Obtain instances of the robot hardware using the hardware map, and initialize the BNO055IMU
      * @param hwMap
@@ -81,11 +96,18 @@ public class MecBot {
         backLeft = hwMap.get(DcMotor.class, "back_left_motor");
         backRight = hwMap.get(DcMotor.class, "back_right_motor");
 
+        /*
+         * TODO: Need to set the motor mode
+         */
+
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         imu = hwMap.get(BNO055IMU.class, "imu");
 
+        /*
+         * TODO: Make this a BNO055Enhanced.Parameters, and use the appropriate axes map and sign
+         */
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.accelerationIntegrationAlgorithm = null;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -101,6 +123,11 @@ public class MecBot {
     public Pose getPose() {
         return pose;
     }
+
+    public DcMotor getBackLeft() {return backLeft;}
+    public DcMotor getFrontLeft() {return frontLeft;}
+    public DcMotor getFrontRight() {return frontRight;}
+    public DcMotor getBackRight() {return backRight;}
 
     /**
      * Obtain the current robot heading using the IMU (note use of the heading offset)
@@ -180,6 +207,9 @@ public class MecBot {
      * @param va    Rotation speed in radians/sec (counter-clockwise if positive)
      */
     public void setDriveSpeed(float vx, float vy, float va){
+        /*
+         * TODO: Adjust the px calculation to take roller angle into account
+         */
         float px = (vx / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
         float py = (vy / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
         float pa = (WL_AVG * va / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
@@ -244,6 +274,8 @@ public class MecBot {
 
         /*
          * Determine small increment of robot motion in ROBOT COORDINATE SYSTEM
+         *
+         * TODO: Adjust the dXR calculation to take roller angle into account
          */
         float dXR = 0.25f * (-sBL + sFL - sFR + sBR);
         float dYR = 0.25f * (sBL + sFL + sFR + sBR);

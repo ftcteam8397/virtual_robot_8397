@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.mecbot;
+package org.firstinspires.ftc.teamcode.mecbot.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.mecbot.MecBot;
 
 @TeleOp(name="Test Mech Bot", group="tutorial")
 public class TestMecBot extends LinearOpMode {
@@ -28,9 +29,8 @@ public class TestMecBot extends LinearOpMode {
             /*
              * Set drive power using the gamepad
              */
-            bot.setDrivePower(-gamepad1.left_stick_y,
-                    -gamepad1.right_stick_x,
-                    gamepad1.left_stick_x);
+            bot.setDrivePower(gamepad1.left_stick_x,-gamepad1.left_stick_y,
+                    -gamepad1.right_stick_x);
         }
     }
 }

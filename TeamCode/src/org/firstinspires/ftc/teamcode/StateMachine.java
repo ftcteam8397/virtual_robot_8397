@@ -25,7 +25,7 @@ public class StateMachine extends OpMode {
 
     public State driveForward() {
         if (bot.getPose().x < 50) {
-            bot.setDrivePower(1, 0, 0);
+            bot.setDrivePower(0, 1, 0);
             return State.DRIVE_FORWARD;
         } else {
             return State.TURN;
@@ -34,7 +34,7 @@ public class StateMachine extends OpMode {
 
     public State turn() {
         if (bot.getPose().theta < Math.PI / 2) {
-            bot.setDrivePower(0, 1, 0);
+            bot.setDrivePower(0, 0, 1);
             return State.TURN;
         } else {
             return State.FINISHED;
