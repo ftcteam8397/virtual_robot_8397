@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.i2c.BNO055Enhanced;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.AngleUtils;
 
@@ -28,10 +29,15 @@ public class MecBot {
      * TODO: Add some constants for motor type, gear ratio, AxesMap, AxesSign, tangent of roller angle.
      */
 
-    public static final float WHEEL_CIRCUMFERENCE = 4 * (float)Math.PI;
-    public static final float TICKS_PER_ROTATION = 560;
+    private final MotorType motorType;
+    private final float GEAR_RATIO;
+    private final float TAN_ALPHA;
+    private final BNO055Enhanced.AxesMap AXES_MAP;
+    private final BNO055Enhanced.AxesSign AXES_SIGN;
+    public final float WHEEL_CIRCUMFERENCE;
+    public final float TICKS_PER_ROTATION = 560;
     public static final float MAX_TICKS_PER_SECOND = 2500;
-    public static final float WL_AVG = 15;
+    public  final float WL_AVG;
 
     /*
      * Drive Motors
@@ -46,7 +52,7 @@ public class MecBot {
      *
      * TODO: Make this a BNO055Enhanced
      */
-    BNO055IMU imu;
+    BNO055Enhanced imu;
 
     /*
      * The heading offset (this gives us flexibility in specifying the world coordinate system).
@@ -86,6 +92,29 @@ public class MecBot {
      * gear ratio, axes map, and axes sign
      */
 
+    public MecBot (MotorType mType, float w, float l, float wheelDiam, float rollerAngle,
+                   float gearRatio, BNO055Enhanced.AxesMap axesMap, BNO055Enhanced.AxesSign axesSign) {
+        MOTOR_TYPE = mType;
+        TAN_ALPHA = (float)Math.tan(Math.toRadians(rollerAngle));
+        WL_AVG = 0.5F*w + 0.5f*1/TAN_ALPHA;
+        WHEEL_CIRCUMFERENCE = (float)Math.PI * wheelDiam;
+        GEAR_RATIO = gearRatio;
+        AXES_MAP = axesMap;
+        AXES_SIGN = axesSign;
+        TICKS_PER_ROTATION = (float)mType.ticksPerRotation;
+    }
+
+    public MecBot(){
+        MOTOR_TYPE = MotorType.NeverestOrbital20;
+        TAN_ALPHA = 1;
+        WL_AVG = 15;
+        WHEEL_CIRCUMFERENCE = 4 * (float)Math.PI;
+        GEAR_RATIO = 1;
+        AXES_MAP = BNO055Enhanced.AxesMap.XXYZ;
+        AXES_SIGN = BNO055Enhanced.AxesSign.PPP;
+        TICKS_PER_ROTATION= Float(mType.ticksPerRotation);
+    }
+
     /**
      * Obtain instances of the robot hardware using the hardware map, and initialize the BNO055IMU
      * @param hwMap
@@ -100,15 +129,24 @@ public class MecBot {
          * TODO: Need to set the motor mode
          */
 
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (MOTOR_TYPE.reveresed) {
+            frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        } else;
+        {
 
-        imu = hwMap.get(BNO055IMU.class, "imu");
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        imu = hwMap.get(BNO055Enhanced.class, "imu");
 
         /*
          * TODO: Make this a BNO055Enhanced.Parameters, and use the appropriate axes map and sign
          */
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        BNO055Enhanced.Parameters parameters = new BNO055Enhanced.Parameters();
         parameters.accelerationIntegrationAlgorithm = null;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -116,6 +154,8 @@ public class MecBot {
         parameters.calibrationDataFile = "";
         parameters.loggingEnabled = false;
         parameters.loggingTag = "Who cares.";
+        parameters.AXES_MAP = axesMap;
+        parameters.AXES_SIGN = axesSign;
 
         imu.initialize(parameters);
     }
@@ -210,9 +250,12 @@ public class MecBot {
         /*
          * TODO: Adjust the px calculation to take roller angle into account
          */
-        float px = (vx / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
-        float py = (vy / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
-        float pa = (WL_AVG * va / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION / MAX_TICKS_PER_SECOND;
+        float px = (vx / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION * GEAR_RATIO
+                / (MAX_TICKS_PER_SECOND * TAN_ALPHA);
+        float py = (vy / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION * GEAR_RATIO
+                / MAX_TICKS_PER_SECOND;
+        float pa = (WL_AVG * va / WHEEL_CIRCUMFERENCE) * TICKS_PER_ROTATION * GEAR_RATIO
+                / MAX_TICKS_PER_SECOND;
         setDrivePower(px, py, pa);
     }
 
@@ -267,17 +310,17 @@ public class MecBot {
          * So (newBL / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE has dimensions of  inches.
          *
          */
-        float sBL = (newBL / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE;
-        float sFL = (newFL / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE;
-        float sFR = (newFR / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE;
-        float sBR = (newBR / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE;
+        float sBL = (newBL / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE / GEAR_RATIO;
+        float sFL = (newFL / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE / GEAR_RATIO;
+        float sFR = (newFR / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE / GEAR_RATIO;
+        float sBR = (newBR / TICKS_PER_ROTATION) * WHEEL_CIRCUMFERENCE / GEAR_RATIO;
 
         /*
          * Determine small increment of robot motion in ROBOT COORDINATE SYSTEM
          *
          * TODO: Adjust the dXR calculation to take roller angle into account
          */
-        float dXR = 0.25f * (-sBL + sFL - sFR + sBR);
+        float dXR = 0.25f * (-sBL + sFL - sFR + sBR) * TAN_ALPHA;
         float dYR = 0.25f * (sBL + sFL + sFR + sBR);
 
         /*
